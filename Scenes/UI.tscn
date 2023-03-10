@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://bi2ijwpro4fgy"]
+
+[ext_resource type="Script" path="res://Scripts/FPSCounter.cs" id="1_i0jxr"]
+
+[sub_resource type="SystemFont" id="SystemFont_csno7"]
+generate_mipmaps = true
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Label" type="Label" parent="SubViewportContainer/SubViewport"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -28.0
+offset_top = -26.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = SubResource("SystemFont_csno7")
+theme_override_font_sizes/font_size = 64
+text = "FPS"
+horizontal_alignment = 2
+vertical_alignment = 2
+script = ExtResource("1_i0jxr")

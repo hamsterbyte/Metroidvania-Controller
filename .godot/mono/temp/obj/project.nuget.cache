@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "pZZk/FT0Sjzr70tFd6komz+KgRE+j5IJkkgN29GcNWKwS6MSe1aa2kRYMmQyfwtQyxnoTr7ppAxt2dbmNGCB4A==",
+  "success": true,
+  "projectFilePath": "D:\\Godot Projects\\Metroidvania Controller\\Metroidvania Controller.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\thehamsterbyte\\.nuget\\packages\\godot.sourcegenerators\\4.0.0\\godot.sourcegenerators.4.0.0.nupkg.sha512",
+    "C:\\Users\\thehamsterbyte\\.nuget\\packages\\godotsharp\\4.0.0\\godotsharp.4.0.0.nupkg.sha512",
+    "C:\\Users\\thehamsterbyte\\.nuget\\packages\\godotsharpeditor\\4.0.0\\godotsharpeditor.4.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
