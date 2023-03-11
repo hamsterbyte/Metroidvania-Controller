@@ -203,12 +203,12 @@ public class CharacterStateMachine : CharacterBody2D{
     #region MEMBERS
 
     //Basic Movement
-    [Export] public float moveSpeed = 300.0f;
+    [Export] public float moveSpeed = 128.0f;
     [Export] public float runSpeedMultiplier = 2f;
-    [Export] public float acceleration = 20f;
-    [Export] public float deceleration = 20f;
-    [Export] public float airAcceleration = 20f;
-    [Export] public float airDeceleration = 20f;
+    [Export] public float acceleration = 10f;
+    [Export] public float deceleration = 10f;
+    [Export] public float airAcceleration = 5f;
+    [Export] public float airDeceleration = 5f;
 
     #endregion
 
@@ -259,7 +259,7 @@ public class CharacterStateMachine : CharacterBody2D{
 
     #region GRAVITY
 
-    [Export] public float maxFallSpeed = 128f;
+    [Export] public float maxFallSpeed = 512f;
     private float _gravity;
 
     /// <summary>
@@ -333,8 +333,8 @@ public class CharacterStateMachine : CharacterBody2D{
     #region JUMP
 
     //Jumping
-    [Export] public float jumpHeight = 64;
-    [Export] public float timeToJumpApex = 0.5f;
+    [Export] public float jumpHeight = 32;
+    [Export] public float timeToJumpApex = 0.25f;
     [Export] public float fallSpeedMultiplier = 2f;
     [Export] public uint maxJumps = 2;
     private float _jumpVelocity;
@@ -368,8 +368,8 @@ public class CharacterStateMachine : CharacterBody2D{
 
     #region WALL CLING
 
-    [Export] public float wallClingTime;
-    [Export] public float wallClingGravityModifier;
+    [Export] public float wallClingTime = .5f;
+    [Export] public float wallClingGravityModifier = .2f;
     private double wallClingTimer;
     private bool _isWallClinging;
     private Vector2 _wallNormal;
@@ -406,8 +406,8 @@ public class CharacterStateMachine : CharacterBody2D{
     #region DASH
 
     //Dash
-    [Export] public float dashUnits = 200f;
-    [Export] public float dashTime = .5f;
+    [Export] public float dashUnits = 128f;
+    [Export] public float dashTime = .25f;
     private bool _canDash = true;
     private float _dashForce;
     private bool _didDash;
