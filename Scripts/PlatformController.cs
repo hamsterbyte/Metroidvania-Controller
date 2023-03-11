@@ -57,7 +57,7 @@ public partial class PlatformController : CharacterBody2D{
     private void InterpolatePlayerPosition(){
         _sprite.TopLevel = true;
         _sprite.GlobalPosition =
-            _sprite.GlobalPosition.Lerp(_lastPhysicsPosition, (float)Engine.GetPhysicsInterpolationFraction());
+            _sprite.GlobalPosition.Slerp(_lastPhysicsPosition, (float)Engine.GetPhysicsInterpolationFraction());
     }
 
     #endregion

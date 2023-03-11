@@ -906,7 +906,7 @@ shape = SubResource("RectangleShape2D_8he44")
 z_index = 2
 sprite_frames = SubResource("SpriteFrames_q4rmp")
 animation = &"Walk"
-frame_progress = 0.836291
+frame_progress = 0.168011
 
 [node name="Animator" type="Node2D" parent="Player"]
 script = ExtResource("9_0ypci")
