@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Animator : Node2D{
+public class Animator : Node2D{
     #region GODOT
 
     // Called when the node enters the scene tree for the first time.
