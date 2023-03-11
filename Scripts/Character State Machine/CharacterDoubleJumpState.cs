@@ -1,21 +1,27 @@
-﻿public class CharacterDoubleJumpState : CharacterBaseState{
+﻿using Godot;
+
+public class CharacterDoubleJumpState : CharacterBaseState{
+    public CharacterDoubleJumpState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+    }
     public override void EnterState(){
-        throw new System.NotImplementedException();
+        IsAirborneSubState = true;
     }
 
     public override void UpdateState(){
-        throw new System.NotImplementedException();
+        
     }
 
     public override void ExitState(){
-        throw new System.NotImplementedException();
+        
     }
 
     public override void CheckSwitchStates(){
-        throw new System.NotImplementedException();
+        
     }
 
     public override void InitializeSubState(){
-        throw new System.NotImplementedException();
+        
     }
+
 }

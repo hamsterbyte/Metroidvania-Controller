@@ -1,21 +1,36 @@
-﻿public class CharacterIdleState: CharacterBaseState{
+﻿using Godot;
+
+public class CharacterIdleState: CharacterBaseState{
+    
+    public CharacterIdleState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+        IsGroundedSubState = true;
+    }
     public override void EnterState(){
-        throw new System.NotImplementedException();
+        GD.Print("Enter Idle");
     }
 
     public override void UpdateState(){
-        throw new System.NotImplementedException();
+        CheckSwitchStates();
     }
 
     public override void ExitState(){
-        throw new System.NotImplementedException();
+        GD.Print("Exit Idle");
     }
 
     public override void CheckSwitchStates(){
-        throw new System.NotImplementedException();
+        if (Context.Velocity.X != 0){
+            if (!Context.IsRunPressed){
+                SwitchState(Factory.Walk());
+            }
+            else{
+                SwitchState(Factory.Run());
+            }
+        }
     }
 
     public override void InitializeSubState(){
-        throw new System.NotImplementedException();
+        
     }
+
 }

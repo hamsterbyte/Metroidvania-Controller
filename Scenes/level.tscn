@@ -1,6 +1,6 @@
-[gd_scene load_steps=59 format=3 uid="uid://bg0wn2p1tkqu6"]
+[gd_scene load_steps=59 format=3 uid="uid://baiwuaqis6jj1"]
 
-[ext_resource type="Script" path="res://Scripts/CharacterStateMachine.cs" id="1_u6ke1"]
+[ext_resource type="Script" path="res://Scripts/Character State Machine/CharacterStateMachine.cs" id="1_u6ke1"]
 [ext_resource type="Texture2D" uid="uid://by3uoypkgmhmv" path="res://Assets/Main Characters/Virtual Guy/Idle (32x32).png" id="2_pbjan"]
 [ext_resource type="Texture2D" uid="uid://bmecgb7pfadsl" path="res://Assets/Main Characters/Virtual Guy/Double Jump (32x32).png" id="2_sub5n"]
 [ext_resource type="Texture2D" uid="uid://xkaph1logvlx" path="res://Assets/Terrain/Terrain (16x16).png" id="2_xjedj"]
@@ -893,8 +893,7 @@ shape = SubResource("RectangleShape2D_8he44")
 [node name="Sprite" type="AnimatedSprite2D" parent="Player"]
 z_index = 2
 sprite_frames = SubResource("SpriteFrames_q4rmp")
-animation = &"Walk"
-frame_progress = 0.168011
+animation = &"Idle"
 
 [node name="Animator" type="Node2D" parent="Player"]
 script = ExtResource("9_0ypci")

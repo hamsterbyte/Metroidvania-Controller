@@ -1,21 +1,28 @@
-﻿public class CharacterRunState : CharacterBaseState{
+﻿using Godot;
+
+public class CharacterRunState : CharacterBaseState{
+    public CharacterRunState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+        IsGroundedSubState = true;
+    }
     public override void EnterState(){
-        throw new System.NotImplementedException();
+        GD.Print("Entered Run");
     }
 
     public override void UpdateState(){
-        throw new System.NotImplementedException();
+        
     }
 
     public override void ExitState(){
-        throw new System.NotImplementedException();
+        GD.Print("Exit Run");
     }
 
     public override void CheckSwitchStates(){
-        throw new System.NotImplementedException();
+        
     }
 
     public override void InitializeSubState(){
-        throw new System.NotImplementedException();
+        
     }
+
 }

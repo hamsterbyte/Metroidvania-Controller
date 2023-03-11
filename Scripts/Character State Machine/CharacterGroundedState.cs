@@ -1,21 +1,42 @@
-﻿public class CharacterGroundedState : CharacterBaseState{
+﻿using Godot;
+
+public class CharacterGroundedState : CharacterBaseState, IRootState{
+    public CharacterGroundedState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+        IsRootState = true;
+    }
+
     public override void EnterState(){
-        throw new System.NotImplementedException();
+        GD.Print("Enter Grounded");
+        InitializeSubState();
     }
 
     public override void UpdateState(){
-        throw new System.NotImplementedException();
+        CheckSwitchStates();
     }
 
     public override void ExitState(){
-        throw new System.NotImplementedException();
+        GD.Print("Exit Grounded");
     }
 
     public override void CheckSwitchStates(){
-        throw new System.NotImplementedException();
+        if (!Context.Grounded && !Context.OnWall){
+            SwitchState(Factory.Airborne());
+        }
+        
+        CheckSwitchSubState();
     }
 
-    public override void InitializeSubState(){
-        throw new System.NotImplementedException();
+    public sealed override void InitializeSubState(){
+        CheckSwitchSubState();
+    }
+
+    public void CheckSwitchSubState(){
+        if (Context.Velocity.X == 0){
+            SetSubState(Factory.Idle());
+        }
+        else{
+            SetSubState(Context.IsRunPressed ? Factory.Run() : Factory.Walk());
+        }
     }
 }

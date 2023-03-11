@@ -13,8 +13,8 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// START METHOD; CALLED ONCE AT START
     /// </summary>
     public override void _Ready(){
-        _sprite = GetNode<Node2D>("Sprite");
-        _states = new CharacterStateFactory(this);
+        InitializeInterpolation();
+        InitializeStates();
         CalculateGravity();
         CalculateJumpVelocity();
         CalculateDashForce();
@@ -26,8 +26,8 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// </summary>
     /// <param name="delta"></param>
     public override void _PhysicsProcess(double delta){
+        _fixedDelta = delta;
         _lastPhysicsPosition = GlobalPosition;
-        CalculateVelocity(delta);
         MoveAndSlide();
         UpdateCollisionMessages();
     }
@@ -37,10 +37,11 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// </summary>
     /// <param name="delta"></param>
     public override void _Process(double delta){
+        _delta = delta;
         GatherInput();
         InterpolatePlayerPosition();
-        UpdateStates();
         DelayedActions.IncrementActions(delta);
+        UpdateStates();
     }
 
     #endregion
@@ -51,34 +52,26 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     private CharacterBaseState _currentState;
     private CharacterStateFactory _states;
-    private Vector2 _previousVelocity;
-    private Vector2 _currentVelocity;
 
     #endregion
 
-    #region EVENTS
+    #region PROPERTIES
 
-    public delegate void OnStateChanged(AnimationStates state);
-
-    public OnStateChanged onStateChanged;
+    public CharacterBaseState CurrentState{
+        get => _currentState;
+        set => _currentState = value;
+    }
 
     #endregion
 
     private void UpdateStates(){
-        _currentVelocity = Velocity;
-        if (Grounded){
-            //Check idle
-            if (_previousVelocity.X != 0 && _currentVelocity.X == 0){
-                onStateChanged?.Invoke(AnimationStates.Idle);
-            }
+        _currentState.UpdateStates();
+    }
 
-            //Check began walking
-            if (_previousVelocity.X == 0 && _currentVelocity.X != 0 && !_isRunPressed){
-                onStateChanged?.Invoke(AnimationStates.Walk);
-            }
-        }
-
-        _previousVelocity = Velocity;
+    private void InitializeStates(){
+        _states = new CharacterStateFactory(this);
+        _currentState = _states.Grounded();
+        _currentState.EnterState();
     }
 
     #endregion
@@ -99,15 +92,32 @@ public partial class CharacterStateMachine : CharacterBody2D{
             _sprite.GlobalPosition.Slerp(_lastPhysicsPosition, (float)Engine.GetPhysicsInterpolationFraction());
     }
 
+    /// <summary>
+    /// Initialize members required for interpolation
+    /// </summary>
+    private void InitializeInterpolation(){
+        _sprite = GetNode<Node2D>("Sprite");
+    }
+
     #endregion
 
     #region INPUT
 
-    //VARIABLES
+    #region MEMBERS
+
     private Vector2 _moveInput;
     private float _directionX;
     private bool _didJump;
     private bool _isRunPressed;
+
+    #endregion
+
+    #region PROPERTIES
+
+    public bool IsRunPressed => _isRunPressed;
+    public Vector2 MoveInput => _moveInput;
+
+    #endregion
 
 
     /// <summary>
@@ -136,7 +146,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
     }
 
     #endregion
-    
+
     #region COLLISIONS
 
     #region FLAGS
@@ -206,26 +216,48 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     #region MEMBERS
 
-    //Basic Movement
     [Export] public float moveSpeed = 128.0f;
     [Export] public float runSpeedMultiplier = 2f;
     [Export] public float acceleration = 10f;
     [Export] public float deceleration = 10f;
     [Export] public float airAcceleration = 5f;
     [Export] public float airDeceleration = 5f;
+    private Vector2 _previousVelocity;
+    private Vector2 _currentVelocity;
+    private double _delta;
+    private double _fixedDelta;
 
     #endregion
+
+    #region PROPERTIES
+
+    public Vector2 PreviousVelocity{
+        get => _previousVelocity;
+        set => _previousVelocity = value;
+    }
+
+    public Vector2 CurrentVelocity{
+        get => _currentVelocity;
+        set => _currentVelocity = value;
+    }
+
+    public double Delta => _delta;
+    public double FixedDelta => _fixedDelta;
+
+    #endregion
+
+    #region METHODS
 
     /// <summary>
     /// Calculate directional velocity, then apply to the character
     /// </summary>
     /// <param name="delta"></param>
     private void CalculateVelocity(double delta){
-        Vector2 velocity = Velocity;
-        CalculateVelocityX(ref velocity);
-        CalculateVelocityY(ref velocity, delta);
-        CalculateAbilityVelocity(ref velocity, delta);
-        Velocity = velocity;
+        _currentVelocity = Velocity;
+        CalculateVelocityX(ref _currentVelocity);
+        CalculateVelocityY(ref _currentVelocity, delta);
+        CalculateAbilityVelocity(ref _currentVelocity, delta);
+        Velocity = _currentVelocity;
     }
 
 
@@ -233,7 +265,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// Calculate the X velocity to apply to the character
     /// </summary>
     /// <param name="vel"></param>
-    private void CalculateVelocityX(ref Vector2 vel){
+    public void CalculateVelocityX(ref Vector2 vel){
         //Calculate target velocity
         float targetVelocity = _isRunPressed ? _moveInput.X * moveSpeed * runSpeedMultiplier : _moveInput.X * moveSpeed;
         if (!_isDashing){
@@ -255,9 +287,11 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// </summary>
     /// <param name="delta"></param>
     /// <param name="vel"></param>
-    private void CalculateVelocityY(ref Vector2 vel, double delta){
+    public void CalculateVelocityY(ref Vector2 vel, double delta){
         ApplyGravity(delta, ref vel);
     }
+
+    #endregion
 
     #endregion
 
@@ -265,6 +299,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     [Export] public float maxFallSpeed = 512f;
     private float _gravity;
+    public float Gravity => _gravity;
 
     /// <summary>
     /// Calculate gravity force to be applied to the character based on his chosen jump height and time to jump apex
@@ -298,7 +333,8 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// <summary>
     /// Calculate velocity to be applied by abilities; this overwrites any previously calculated velocity
     /// </summary>
-    /// <param name="vel"></param>
+    /// <param name="vel">Reference to _currentVelocity</param>
+    /// /// <param name="delta">Delta from _PhysicsProcess</param>
     private void CalculateAbilityVelocity(ref Vector2 vel, double delta){
         if (_moveInput.GetDirection().Vector.Y <= 0){
             //Dash

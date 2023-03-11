@@ -1,21 +1,36 @@
-﻿public class CharacterWalkState : CharacterBaseState{
+﻿using Godot;
+
+public class CharacterWalkState : CharacterBaseState{
+    public CharacterWalkState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+        IsGroundedSubState = true;
+    }
     public override void EnterState(){
-        throw new System.NotImplementedException();
+        GD.Print("Enter Walk");
     }
 
     public override void UpdateState(){
-        throw new System.NotImplementedException();
+        CheckSwitchStates();
     }
 
     public override void ExitState(){
-        throw new System.NotImplementedException();
+        GD.Print("Exit Walk");
     }
 
     public override void CheckSwitchStates(){
-        throw new System.NotImplementedException();
+        if (Context.Velocity.X == 0){
+            SwitchState(Factory.Idle());
+        }
+
+        if (Context.IsRunPressed){
+            SwitchState(Factory.Run());
+        }
+        
     }
 
     public override void InitializeSubState(){
-        throw new System.NotImplementedException();
+        
     }
+
+
 }
