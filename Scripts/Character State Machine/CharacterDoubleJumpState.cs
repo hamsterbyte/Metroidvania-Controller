@@ -1,4 +1,7 @@
 ﻿public class CharacterDoubleJumpState : CharacterBaseState{
+    public CharacterDoubleJumpState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+    }
     public override void EnterState(){
         throw new System.NotImplementedException();
     }

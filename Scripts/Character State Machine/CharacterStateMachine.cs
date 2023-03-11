@@ -13,8 +13,14 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// START METHOD; CALLED ONCE AT START
     /// </summary>
     public override void _Ready(){
+        //Interpolation
         _sprite = GetNode<Node2D>("Sprite");
+
+        //States
         _states = new CharacterStateFactory(this);
+        _currentState = _states.Grounded();
+        _currentState.EnterState();
+
         CalculateGravity();
         CalculateJumpVelocity();
         CalculateDashForce();
@@ -53,6 +59,12 @@ public partial class CharacterStateMachine : CharacterBody2D{
     private CharacterStateFactory _states;
     private Vector2 _previousVelocity;
     private Vector2 _currentVelocity;
+
+    #endregion
+
+    #region PROPERTIES
+
+    public CharacterBaseState CurrentState{ get; set; }
 
     #endregion
 
@@ -136,7 +148,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
     }
 
     #endregion
-    
+
     #region COLLISIONS
 
     #region FLAGS

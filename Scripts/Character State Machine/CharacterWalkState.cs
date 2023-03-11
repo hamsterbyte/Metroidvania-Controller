@@ -1,4 +1,7 @@
 ﻿public class CharacterWalkState : CharacterBaseState{
+    public CharacterWalkState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+    }
     public override void EnterState(){
         throw new System.NotImplementedException();
     }

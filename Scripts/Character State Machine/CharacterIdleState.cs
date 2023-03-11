@@ -1,4 +1,8 @@
 ﻿public class CharacterIdleState: CharacterBaseState{
+    
+    public CharacterIdleState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+    }
     public override void EnterState(){
         throw new System.NotImplementedException();
     }

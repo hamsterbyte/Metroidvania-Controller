@@ -1,21 +1,27 @@
-﻿public class CharacterGroundedState : CharacterBaseState{
+﻿using Godot;
+
+public class CharacterGroundedState : CharacterBaseState{
+    public CharacterGroundedState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+    }
+
     public override void EnterState(){
-        throw new System.NotImplementedException();
+        GD.Print("Entering Grounded State");
     }
 
     public override void UpdateState(){
-        throw new System.NotImplementedException();
+        CheckSwitchStates();
     }
 
     public override void ExitState(){
-        throw new System.NotImplementedException();
+        
     }
 
     public override void CheckSwitchStates(){
-        throw new System.NotImplementedException();
+        
     }
 
     public override void InitializeSubState(){
-        throw new System.NotImplementedException();
+        
     }
 }

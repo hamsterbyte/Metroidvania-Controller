@@ -1,4 +1,7 @@
 ﻿public class CharacterAttackState : CharacterBaseState{
+    public CharacterAttackState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
+        base(currentContext, characterStateFactory){
+    }
     public override void EnterState(){
         throw new System.NotImplementedException();
     }
