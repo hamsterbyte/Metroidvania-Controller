@@ -6,7 +6,7 @@
 /// Extending this asset will require intermediate knowledge of C# and software architecture
 /// I hope that this will help you in your game dev journey
 /// </summary>
-public class CharacterStateMachine : CharacterBody2D{
+public partial class CharacterStateMachine : CharacterBody2D{
     #region GODOT
 
     /// <summary>

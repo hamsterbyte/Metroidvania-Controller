@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Animator : Node2D{
+public partial class Animator : Node2D{
     #region GODOT
 
     // Called when the node enters the scene tree for the first time.
@@ -49,11 +49,11 @@ public class Animator : Node2D{
     private AnimationStates _currentState;
     private AnimationStates _previousState;
     private AnimatedSprite2D _sprite;
-    private PlatformController _controller;
+    private CharacterStateMachine _controller;
 
     private void InitializeStates(){
         _sprite = GetParent().GetNode<AnimatedSprite2D>("Sprite");
-        _controller = GetParent() as PlatformController;
+        _controller = GetParent() as CharacterStateMachine;
         _currentState = AnimationStates.Idle;
         if (_controller != null) _controller.onStateChanged += SwitchState;
     }

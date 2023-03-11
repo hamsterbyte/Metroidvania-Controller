@@ -1,6 +1,6 @@
 [gd_scene load_steps=59 format=3 uid="uid://bg0wn2p1tkqu6"]
 
-[ext_resource type="Script" path="res://Scripts/PlatformController.cs" id="1_80o0v"]
+[ext_resource type="Script" path="res://Scripts/CharacterStateMachine.cs" id="1_u6ke1"]
 [ext_resource type="Texture2D" uid="uid://by3uoypkgmhmv" path="res://Assets/Main Characters/Virtual Guy/Idle (32x32).png" id="2_pbjan"]
 [ext_resource type="Texture2D" uid="uid://bmecgb7pfadsl" path="res://Assets/Main Characters/Virtual Guy/Double Jump (32x32).png" id="2_sub5n"]
 [ext_resource type="Texture2D" uid="uid://xkaph1logvlx" path="res://Assets/Terrain/Terrain (16x16).png" id="2_xjedj"]
@@ -884,19 +884,7 @@ position = Vector2(202, 57)
 floor_constant_speed = true
 floor_max_angle = 0.802851
 floor_snap_length = 10.0
-script = ExtResource("1_80o0v")
-moveSpeed = 128.0
-acceleration = 10.0
-deceleration = 10.0
-airAcceleration = 5.0
-airDeceleration = 5.0
-maxFallSpeed = 512.0
-jumpHeight = 32.0
-timeToJumpApex = 0.25
-wallClingTime = 0.5
-wallClingGravityModifier = 0.2
-dashUnits = 128.0
-dashTime = 0.25
+script = ExtResource("1_u6ke1")
 
 [node name="Collider" type="CollisionShape2D" parent="Player"]
 position = Vector2(0, 4)
