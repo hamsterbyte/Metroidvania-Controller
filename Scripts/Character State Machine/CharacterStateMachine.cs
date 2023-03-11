@@ -14,6 +14,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// </summary>
     public override void _Ready(){
         _sprite = GetNode<Node2D>("Sprite");
+        _states = new CharacterStateFactory(this);
         CalculateGravity();
         CalculateJumpVelocity();
         CalculateDashForce();
@@ -48,6 +49,8 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     #region MEMBERS
 
+    private CharacterBaseState _currentState;
+    private CharacterStateFactory _states;
     private Vector2 _previousVelocity;
     private Vector2 _currentVelocity;
 
