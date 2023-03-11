@@ -44,6 +44,42 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     #endregion
 
+    #region STATES
+
+    #region MEMBERS
+
+    private Vector2 _previousVelocity;
+    private Vector2 _currentVelocity;
+
+    #endregion
+
+    #region EVENTS
+
+    public delegate void OnStateChanged(AnimationStates state);
+
+    public OnStateChanged onStateChanged;
+
+    #endregion
+
+    private void UpdateStates(){
+        _currentVelocity = Velocity;
+        if (Grounded){
+            //Check idle
+            if (_previousVelocity.X != 0 && _currentVelocity.X == 0){
+                onStateChanged?.Invoke(AnimationStates.Idle);
+            }
+
+            //Check began walking
+            if (_previousVelocity.X == 0 && _currentVelocity.X != 0 && !_isRunPressed){
+                onStateChanged?.Invoke(AnimationStates.Walk);
+            }
+        }
+
+        _previousVelocity = Velocity;
+    }
+
+    #endregion
+
     #region INTERPOLATION
 
     private Node2D _sprite;
@@ -97,42 +133,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
     }
 
     #endregion
-
-    #region STATES
-
-    #region MEMBERS
-
-    private Vector2 _previousVelocity;
-    private Vector2 _currentVelocity;
-
-    #endregion
-
-    #region EVENTS
-
-    public delegate void OnStateChanged(AnimationStates state);
-
-    public OnStateChanged onStateChanged;
-
-    #endregion
-
-    private void UpdateStates(){
-        _currentVelocity = Velocity;
-        if (Grounded){
-            //Check idle
-            if (_previousVelocity.X != 0 && _currentVelocity.X == 0){
-                onStateChanged?.Invoke(AnimationStates.Idle);
-            }
-        
-            //Check began walking
-            if (_previousVelocity.X == 0 && _currentVelocity.X != 0 && !_isRunPressed){
-                onStateChanged?.Invoke(AnimationStates.Walk);
-            }
-        }
-        _previousVelocity = Velocity;
-    }
-
-    #endregion
-
+    
     #region COLLISIONS
 
     #region FLAGS
