@@ -65,6 +65,7 @@ public partial class Animator : Node2D{
             CharacterDoubleJumpState => CharacterStates.DoubleJump,
             CharacterWallJumpState => CharacterStates.WallJump,
             CharacterWallClingState => CharacterStates.WallCling,
+            CharacterDashState => CharacterStates.Dash,
             _ => _animationState
         };
     }
@@ -106,6 +107,9 @@ public partial class Animator : Node2D{
                 break;
             case CharacterStates.Hit:
                 _animatedSprite2D.Play("Hit");
+                break;
+            case CharacterStates.Dash:
+                _animatedSprite2D.Play("Fall");
                 break;
         }
     }

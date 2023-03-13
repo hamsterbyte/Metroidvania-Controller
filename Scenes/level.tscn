@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://baiwuaqis6jj1"]
+[gd_scene load_steps=8 format=3 uid="uid://baiwuaqis6jj1"]
 
 [ext_resource type="PackedScene" uid="uid://bt4vhfabjrra5" path="res://Scenes/player.tscn" id="1_ei6qo"]
 [ext_resource type="Texture2D" uid="uid://xkaph1logvlx" path="res://Assets/Terrain/Terrain (16x16).png" id="2_xjedj"]
 [ext_resource type="Script" path="res://Scripts/CameraController.cs" id="3_c320i"]
+[ext_resource type="Texture2D" uid="uid://dvnbbssns43j0" path="res://Assets/Background/Blue.png" id="4_wa2kr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p4qbq"]
 texture = ExtResource("2_xjedj")
@@ -551,3 +552,13 @@ script = ExtResource("3_c320i")
 body = NodePath("../Player")
 horizontalPad = -2.0
 verticalPad = 42.0
+
+[node name="Blue" type="Sprite2D" parent="."]
+modulate = Color(0.188235, 0.694118, 0.45098, 1)
+z_index = -10
+texture_filter = 1
+texture_repeat = 2
+position = Vector2(532, 503)
+texture = ExtResource("4_wa2kr")
+region_enabled = true
+region_rect = Rect2(0, 0, 4096, 4096)

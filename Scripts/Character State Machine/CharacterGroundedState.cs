@@ -32,6 +32,13 @@ public class CharacterGroundedState : CharacterBaseState, IRootState{
     }
 
     public void CheckSwitchSubState(){
+        if (Context.DidDash){
+            SetSubState(Manager.Dash());
+            return;
+        }
+
+        if (Context.IsDashing) return;
+        
         if (Context.DidJump){
             SetSubState(Manager.Jump());
         }
@@ -42,21 +49,20 @@ public class CharacterGroundedState : CharacterBaseState, IRootState{
 
             if (Context.Velocity.X != 0) SetSubState(Context.IsRunPressed ? Manager.Run() : Manager.Walk());
         }
-
-        
     }
 
     protected override void CalculateVelocityX(ref Vector2 vel){
+        if (Context.IsDashing) return;
         //Calculate target velocity
         float targetVelocity = Context.IsRunPressed
-            ? Context.MoveInput.X * Context.moveSpeed * Context.runSpeedMultiplier
-            : Context.MoveInput.X * Context.moveSpeed;
+            ? Context.DirectionX * Context.moveSpeed * Context.runSpeedMultiplier
+            : Context.DirectionX * Context.moveSpeed;
 
-        if (Context.MoveInput.X != 0){
+        if (Context.DirectionX != 0){
             vel.X = Mathf.MoveToward(
                 vel.X,
                 targetVelocity,
-                Context.MoveInput.X == Mathf.Sign(vel.X) ? Context.acceleration : Context.deceleration
+                Context.DirectionX == Mathf.Sign(vel.X) ? Context.acceleration : Context.deceleration
             );
         }
         else{
@@ -71,5 +77,7 @@ public class CharacterGroundedState : CharacterBaseState, IRootState{
         //Reset current jump counter
         Context.CurrentJumps = 0;
         Context.canWallCling = true;
+        if (!Context.IsDashing) return;
+        Context.ResetDash();
     }
 }

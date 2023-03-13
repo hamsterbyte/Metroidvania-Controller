@@ -11,7 +11,9 @@ public enum CharacterStates{
     WallJump,
     Jump,
     DoubleJump,
-    Hit
+    Hit,
+    Dash,
+    Dive
 }
 
 public class CharacterStateManager{
@@ -35,7 +37,9 @@ public class CharacterStateManager{
             { CharacterStates.Jump, new CharacterJumpState(_context, this) },
             { CharacterStates.DoubleJump, new CharacterDoubleJumpState(_context, this) },
             { CharacterStates.WallCling, new CharacterWallClingState(_context, this) },
-            { CharacterStates.WallJump, new CharacterWallJumpState(_context, this) }
+            { CharacterStates.WallJump, new CharacterWallJumpState(_context, this) },
+            { CharacterStates.Dash, new CharacterDashState(_context, this) },
+            { CharacterStates.Dive, new CharacterDiveState(_context, this) }
         };
     }
     
@@ -77,6 +81,14 @@ public class CharacterStateManager{
     
     public CharacterBaseState WallCling(){
         return _states[CharacterStates.WallCling];
+    }
+
+    public CharacterBaseState Dash(){
+        return _states[CharacterStates.Dash];
+    }
+    
+    public CharacterBaseState Dive(){
+        return _states[CharacterStates.Dive];
     }
 
     

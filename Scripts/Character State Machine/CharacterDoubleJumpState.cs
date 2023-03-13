@@ -1,7 +1,6 @@
 ﻿using Godot;
 
 public class CharacterDoubleJumpState : CharacterBaseState{
-    private bool _jumpExecuted;
     public CharacterDoubleJumpState(CharacterStateMachine currentContext, CharacterStateManager characterStateManager) :
         base(currentContext, characterStateManager){
     }

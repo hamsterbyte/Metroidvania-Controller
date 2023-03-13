@@ -41,6 +41,10 @@ public class CharacterWallClingState : CharacterBaseState{
             _didWallJump = true;
             SetSubState(Manager.WallJump());
         }
+
+        if (!Context.DidDash) return;
+        Context.DidDash = false;
+        Context.ResetDash();
     }
 
     public override void InitializeSubState(){
@@ -90,6 +94,8 @@ public class CharacterWallClingState : CharacterBaseState{
         _wallClingTimer = Context.wallClingTime;
         //Reset did wall jump
         _didWallJump = false;
+        if (!Context.IsDashing) return;
+        Context.ResetDash();
     }
 
     private void GetWallCollisions(){

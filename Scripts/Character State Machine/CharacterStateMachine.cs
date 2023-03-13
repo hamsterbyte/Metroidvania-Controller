@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System;
+using Godot;
 
 /// <summary>
 /// This character controller was designed to give Unity users a more familiar approach to controlling a character in Godot.
@@ -40,6 +41,8 @@ public partial class CharacterStateMachine : CharacterBody2D{
         GatherInput();
         InterpolatePlayerPosition();
         UpdateJumpTime(delta);
+        UpdateDashTime(delta);
+        DelayedActions.IncrementActions(delta);
         UpdateStates();
     }
 
@@ -133,6 +136,8 @@ public partial class CharacterStateMachine : CharacterBody2D{
         set => _didJump = value;
     }
 
+    public float DirectionX => _directionX;
+
     #endregion
 
 
@@ -141,8 +146,11 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// </summary>
     private void GatherInput(){
         _moveInput = Input.GetVector("Left", "Right", "Up", "Down");
-        _moveInput = _moveInput.GetRaw();
-        _directionX = Input.GetAxis("Left", "Right");
+        _directionX = Mathf.Sign(_moveInput.X) switch{
+            1 => 1,
+            -1 => -1,
+            _ => 0
+        };
         _isRunPressed = Input.IsActionPressed("Run");
         if (Input.IsActionJustPressed("Jump") && _currentJumps < maxJumps){
             _didJump = true;
@@ -154,16 +162,15 @@ public partial class CharacterStateMachine : CharacterBody2D{
         }
 
         if (_moveInput.LengthSquared() != 0){
-            if (Input.IsActionJustPressed("Dash") && !_didDash && !_isDashing &&
-                _moveInput.GetDirection().Vector.Y <= 0){
+            if (Input.IsActionJustPressed("Dash") && !_didDash && !_isDashing){
                 _didDash = true;
+                _isDashing = true;
             }
+        }
 
-            if (Input.IsActionJustPressed("Dash") && !_didDive && !_isDiving &&
-                _moveInput.GetDirection().Vector.Y > 0 &&
-                !Grounded){
-                _didDive = true;
-            }
+
+        if (Input.IsActionJustPressed("Dive") && !_didDive && !Grounded){
+            _didDive = true;
         }
     }
 
@@ -347,12 +354,23 @@ public partial class CharacterStateMachine : CharacterBody2D{
     [Export] public float dashUnits = 128f;
     [Export] public float dashTime = .25f;
     private bool _canDash = true;
+    private double _dashCounter;
     private float _dashForce;
     private bool _didDash;
     private bool _isDashing;
-    
+
     //PROPERTIES
-    
+    public bool DidDash{
+        get => _didDash;
+        set => _didDash = value;
+    }
+
+    public bool IsDashing{
+        get => _isDashing;
+        set => _isDashing = value;
+    }
+
+    public float DashForce => _dashForce;
 
     /// <summary>
     /// Calculate the dash force using the number of units to move / the time it should take to move there
@@ -361,15 +379,34 @@ public partial class CharacterStateMachine : CharacterBody2D{
         _dashForce = dashUnits / dashTime;
     }
 
+    private void UpdateDashTime(double delta){
+        if (!_isDashing) return;
+        _dashCounter += delta;
+        if (_dashCounter >= dashTime){
+            ResetDash();
+        }
+    }
+
+    public void ResetDash(){
+        _isDashing = false;
+        _dashCounter = 0;
+        Velocity = Vector2.Zero;
+    }
+
     #endregion
 
     #region DIVE
 
     //MEMBERS
     private bool _canDive = true;
-    private bool _didDive;
+    private bool _didDive = false;
     private bool _isDiving;
-    
+
+    public bool DidDive{
+        get => _didDive;
+        set => _didDive = value;
+    }
+
     //PROPERTIES
 
     #endregion

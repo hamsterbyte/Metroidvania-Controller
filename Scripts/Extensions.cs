@@ -40,7 +40,7 @@ public readonly struct Direction{
     public Vector2 Vector => _vector;
     private readonly Directions _heading;
     public Directions Heading => _heading;
-    private const float DEADZONE = .33f;
+    private const float DEADZONE = .5f;
 
     /// <summary>
     /// Default constructor, used to calculate the direction based on an input Vector2
@@ -75,7 +75,7 @@ public readonly struct Direction{
                 break;
             case Directions.North:
                 _vector.X = 0;
-                _vector.Y = -1;
+                _vector.Y = -1f;
                 break;
             case Directions.NorthEast:
                 _vector.X = 1;
@@ -91,7 +91,7 @@ public readonly struct Direction{
                 break;
             case Directions.South:
                 _vector.X = 0;
-                _vector.Y = 1;
+                _vector.Y = 1f;
                 break;
             case Directions.SouthWest:
                 _vector.X = -1;
