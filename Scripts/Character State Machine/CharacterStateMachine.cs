@@ -231,6 +231,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
     [Export] public float deceleration = 10f;
     [Export] public float airAcceleration = 5f;
     [Export] public float airDeceleration = 5f;
+    [Export] public float fallSpeedMultiplier = 2f;
     private Vector2 _previousVelocity;
     private Vector2 _currentVelocity;
     private double _delta;
@@ -274,55 +275,12 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     #region ABILITIES
 
-    #region SHARED METHODS
-
-    /// <summary>
-    /// Calculate velocity to be applied by abilities; this overwrites any previously calculated velocity
-    /// </summary>
-    /// <param name="vel">Reference to _currentVelocity</param>
-    /// /// <param name="delta">Delta from _PhysicsProcess</param>
-    private void CalculateAbilityVelocity(ref Vector2 vel, double delta){
-        if (_moveInput.GetDirection().Vector.Y <= 0){
-            //Dash
-            if (_didDash) Dash(ref vel);
-        }
-        else{
-            //Dive
-            if (_didDive) Dive(ref vel);
-        }
-
-        //Normal jump
-        if (_didJump && _currentJumps < maxJumps && !_isWallClinging){
-            Jump(ref vel);
-        }
-
-        //Wall Cling
-        if (_isWallClinging){
-            _wallClingTimer += delta;
-            if (_wallClingTimer <= wallClingTime){
-                //Slow Character fall
-                vel.Y *= wallClingGravityModifier;
-                //Force character against wall
-                vel.X = -_wallNormal.X;
-            }
-        }
-
-        //Wall Jump
-        if (_isWallClinging && _didJump){
-            //Can't wall jump unless clinging to a wall
-            WallJump(ref vel);
-        }
-    }
-
-    #endregion
-
     #region JUMP
 
     #region MEMBERS
 
     [Export] public float jumpHeight = 32;
     [Export] public float timeToJumpApex = 0.25f;
-    [Export] public float fallSpeedMultiplier = 2f;
     [Export] public uint maxJumps = 2;
     private float _jumpVelocity;
     private uint _currentJumps;
@@ -353,16 +311,6 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     #endregion
 
-    /// <summary>
-    /// Apply a jump force to the character
-    /// </summary>
-    /// <param name="vel"></param>
-    private void Jump(ref Vector2 vel){
-        vel.Y = _jumpVelocity;
-        _currentJumps++;
-        _didJump = false;
-    }
-
     private void UpdateJumpTime(double delta){
         if (_jumpTimer > 0){
             _jumpTimer -= delta;
@@ -379,13 +327,6 @@ public partial class CharacterStateMachine : CharacterBody2D{
         _jumpVelocity = -_gravity * timeToJumpApex;
     }
 
-    /// <summary>
-    /// Reset jump ability
-    /// </summary>
-    private void ResetJump(){
-        _currentJumps = 0;
-    }
-
     #endregion
 
     #region WALL CLING
@@ -393,66 +334,25 @@ public partial class CharacterStateMachine : CharacterBody2D{
     [Export] public float wallClingTime = .5f;
     [Export] public float wallClingGravityModifier = .2f;
     public bool canWallCling = true;
-    private double _wallClingTimer;
-    private bool _isWallClinging;
-    private Vector2 _wallNormal;
-
-    private void WallCling(){
-        if (Grounded) return;
-        int collisionCount = GetSlideCollisionCount();
-        for (int i = 0; i < collisionCount; i++){
-            _wallNormal = GetSlideCollision(i).GetNormal();
-        }
-
-        _isWallClinging = true;
-    }
-
-    private void ResetWallCling(){
-        if (!_isWallClinging) return;
-        _isWallClinging = false;
-        _wallNormal = Vector2.Zero;
-        _wallClingTimer = 0;
-    }
 
     #endregion
 
     #region WALL JUMP
 
-    private void WallJump(ref Vector2 vel){
-        _didJump = false;
-        //Apply jump force
-        vel = new Vector2(_jumpVelocity * -_wallNormal.X, _jumpVelocity);
-    }
-
     #endregion
 
     #region DASH
 
-    //Dash
+    //MEMBERS
     [Export] public float dashUnits = 128f;
     [Export] public float dashTime = .25f;
     private bool _canDash = true;
     private float _dashForce;
     private bool _didDash;
     private bool _isDashing;
-
-    /// <summary>
-    /// Apply dash force to character
-    /// </summary>
-    /// <param name="vel">Reference to the current velocity, this will be overwritten</param>
-    private void Dash(ref Vector2 vel){
-        _isDashing = true;
-        _didDash = false;
-
-        if (!Grounded){
-            vel = _moveInput.GetDirection().Vector * _dashForce;
-        }
-        else{
-            vel.X = _directionX * _dashForce;
-        }
-
-        DelayedActions.Add(DashComplete, dashTime);
-    }
+    
+    //PROPERTIES
+    
 
     /// <summary>
     /// Calculate the dash force using the number of units to move / the time it should take to move there
@@ -461,55 +361,16 @@ public partial class CharacterStateMachine : CharacterBody2D{
         _dashForce = dashUnits / dashTime;
     }
 
-    /// <summary>
-    /// Execute this method when dash has completed
-    /// </summary>
-    private void DashComplete(){
-        Vector2 velocity = Velocity;
-        //If character moving up, reset Y velocity to 0
-        velocity.Y = 0;
-        if (_isRunPressed){
-            velocity.X = moveSpeed * _directionX * runSpeedMultiplier;
-        }
-        else{
-            velocity.X = moveSpeed * _directionX;
-        }
-
-        Velocity = velocity;
-        _isDashing = false;
-    }
-
     #endregion
 
     #region DIVE
 
+    //MEMBERS
     private bool _canDive = true;
     private bool _didDive;
     private bool _isDiving;
-
-    /// <summary>
-    /// Apply dive force to the character
-    /// </summary>
-    /// <param name="vel">Reference to the current velocity, this will be overwritten</param>
-    private void Dive(ref Vector2 vel){
-        _didDive = false;
-        _isDiving = true;
-        vel = _moveInput.GetDirection().Vector * _dashForce * 2;
-    }
-
-    /// <summary>
-    /// Call this method when dive has been completed, this happens when the player hits something as a dive can only take place while airborne
-    /// </summary>
-    private void DiveComplete(){
-    }
-
-    /// <summary>
-    /// Call this method to reset the dive ability
-    /// </summary>
-    private void ResetDive(){
-        _isDiving = false;
-        DiveComplete();
-    }
+    
+    //PROPERTIES
 
     #endregion
 

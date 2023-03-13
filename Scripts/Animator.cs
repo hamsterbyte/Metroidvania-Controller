@@ -56,7 +56,6 @@ public partial class Animator : Node2D{
     /// </summary>
     /// <param name="state"></param>
     private void SwitchState(CharacterBaseState state){
-        GD.Print($"{state} was invoked");
         _animationState = state switch{
             CharacterIdleState => CharacterStates.Idle,
             CharacterWalkState => CharacterStates.Walk,
