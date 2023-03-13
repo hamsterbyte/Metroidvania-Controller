@@ -1,13 +1,13 @@
 ﻿using Godot;
 
 public class CharacterAirborneState : CharacterBaseState, IRootState{
-    public CharacterAirborneState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
-        base(currentContext, characterStateFactory){
+    
+    public CharacterAirborneState(CharacterStateMachine currentContext, CharacterStateManager characterStateManager) :
+        base(currentContext, characterStateManager){
         IsRootState = true;
     }
 
     public override void EnterState(){
-        GD.Print("Enter Airborne");
         InitializeSubState();
     }
 
@@ -16,14 +16,19 @@ public class CharacterAirborneState : CharacterBaseState, IRootState{
     }
 
     public override void ExitState(){
-        GD.Print("Exit Airborne");
+        
     }
 
     public override void CheckSwitchStates(){
-        if (Context.Grounded){
-            SwitchState(Factory.Grounded());
-        }
         CheckSwitchSubState();
+
+        if (Context.Grounded){
+            SwitchState(Manager.Grounded());
+        }
+
+        if (Context.OnWall && Context.canWallCling){
+            SwitchState(Manager.WallCling());
+        }
     }
 
     public override void InitializeSubState(){
@@ -31,14 +36,20 @@ public class CharacterAirborneState : CharacterBaseState, IRootState{
     }
 
     public void CheckSwitchSubState(){
-        if (Context.Velocity.Y >= 0){
-            //Falling
-            SetSubState(Factory.Fall());
+        if (Context.DidJump){
+            //Jumping
+            SetSubState(Manager.DoubleJump());
         }
+        
+        if (!Context.IsJumping || Context.Velocity.Y > 0){
+            SetSubState(Manager.Fall());
+        }
+        
     }
-    
+
+
     /// <summary>
-    /// Calculate horizontal velocity to apply to the character
+    /// Calculate horizontal velocity to apply to the character; uses different acceleration/deceleration values than when grounded
     /// </summary>
     protected override void CalculateVelocityX(ref Vector2 vel){
         //Calculate target velocity
@@ -56,5 +67,26 @@ public class CharacterAirborneState : CharacterBaseState, IRootState{
         else{
             vel.X = Mathf.MoveToward(Context.Velocity.X, 0, Context.airDeceleration);
         }
+    }
+
+    /// <summary>
+    /// Calculate vertical velocity to apply to the character
+    /// </summary>
+    protected override void CalculateVelocityY(ref Vector2 vel, double delta){
+        ApplyGravity(delta, ref vel);
+    }
+
+    /// <summary>
+    /// Apply gravity to the character
+    /// </summary>
+    /// <param name="delta"></param>
+    /// <param name="vel"></param>
+    private void ApplyGravity(double delta, ref Vector2 vel){
+        //Smooth gravity using Verlet integration for improved accuracy
+        Context.PreviousVelocity = vel;
+        vel.Y += Context.Gravity * (float)delta;
+        float appliedVelocityY = (vel.Y + Context.PreviousVelocity.Y) * 0.5f;
+        //Clamp applied velocity to max fall speed
+        vel.Y = Mathf.Clamp(appliedVelocityY, -Context.maxFallSpeed, Context.maxFallSpeed);
     }
 }

@@ -1,26 +1,39 @@
 ﻿using Godot;
 
 public class CharacterJumpState : CharacterBaseState{
-    public CharacterJumpState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
-        base(currentContext, characterStateFactory){
+    private bool _jumpExecuted;
+    public CharacterJumpState(CharacterStateMachine currentContext, CharacterStateManager characterStateManager) :
+        base(currentContext, characterStateManager){
     }
     public override void EnterState(){
-        throw new System.NotImplementedException();
+        
+        Jump();
+        AddImpulse(velocity);
     }
 
     public override void UpdateState(){
-        throw new System.NotImplementedException();
+        CheckSwitchStates();
     }
 
     public override void ExitState(){
-        throw new System.NotImplementedException();
+        
     }
 
     public override void CheckSwitchStates(){
-        throw new System.NotImplementedException();
+        
     }
 
     public override void InitializeSubState(){
-        throw new System.NotImplementedException();
+        
+    }
+
+    private void Jump(){
+        CancelVelocity();
+        velocity = Vector2.Zero;
+        Context.JumpTimer = Context.timeToJumpApex;
+        Context.IsJumping = true;
+        velocity.Y = Context.JumpVelocity;
+        Context.CurrentJumps++;
+        Context.DidJump = false;
     }
 }

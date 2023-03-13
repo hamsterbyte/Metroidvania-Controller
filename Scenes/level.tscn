@@ -880,11 +880,14 @@ size = Vector2(640, 360)
 
 [node name="Player" type="CharacterBody2D" parent="."]
 z_index = 1
-position = Vector2(202, 57)
+position = Vector2(202, 59)
 floor_constant_speed = true
 floor_max_angle = 0.802851
 floor_snap_length = 10.0
 script = ExtResource("1_u6ke1")
+airAcceleration = 7.0
+airDeceleration = 4.0
+maxJumps = 3
 
 [node name="Collider" type="CollisionShape2D" parent="Player"]
 position = Vector2(0, 4)

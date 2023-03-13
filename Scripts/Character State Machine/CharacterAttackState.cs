@@ -1,8 +1,8 @@
 ﻿using Godot;
 
 public class CharacterAttackState : CharacterBaseState{
-    public CharacterAttackState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
-        base(currentContext, characterStateFactory){
+    public CharacterAttackState(CharacterStateMachine currentContext, CharacterStateManager characterStateManager) :
+        base(currentContext, characterStateManager){
     }
     public override void EnterState(){
         

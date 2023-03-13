@@ -1,15 +1,17 @@
 ﻿using Godot;
 
 public class CharacterDoubleJumpState : CharacterBaseState{
-    public CharacterDoubleJumpState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
-        base(currentContext, characterStateFactory){
+    private bool _jumpExecuted;
+    public CharacterDoubleJumpState(CharacterStateMachine currentContext, CharacterStateManager characterStateManager) :
+        base(currentContext, characterStateManager){
     }
     public override void EnterState(){
-        IsAirborneSubState = true;
+        
+        Jump();
     }
 
     public override void UpdateState(){
-        
+        CheckSwitchStates();
     }
 
     public override void ExitState(){
@@ -22,6 +24,17 @@ public class CharacterDoubleJumpState : CharacterBaseState{
 
     public override void InitializeSubState(){
         
+    }
+
+    private void Jump(){
+        CancelVelocity();
+        velocity = Vector2.Zero;
+        Context.JumpTimer = Context.timeToJumpApex;
+        Context.IsJumping = true;
+        velocity.Y = Context.JumpVelocity;
+        Context.CurrentJumps++;
+        Context.DidJump = false;
+        AddImpulse(velocity);
     }
 
 }

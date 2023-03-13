@@ -7,18 +7,19 @@ public enum CharacterStates{
     Walk,
     Run,
     Fall,
-    WallSlide,
+    WallCling,
     WallJump,
     Jump,
+    DoubleJump,
     Hit
 }
 
-public class CharacterStateFactory{
+public class CharacterStateManager{
     private CharacterStateMachine _context;
 
     private Dictionary<CharacterStates, CharacterBaseState> _states;
 
-    public CharacterStateFactory(CharacterStateMachine currentContext){
+    public CharacterStateManager(CharacterStateMachine currentContext){
         _context = currentContext;
         SetupStateDictionary();
     }
@@ -31,6 +32,10 @@ public class CharacterStateFactory{
             { CharacterStates.Walk, new CharacterWalkState(_context, this) },
             { CharacterStates.Run, new CharacterRunState(_context, this) },
             { CharacterStates.Fall, new CharacterFallState(_context, this) },
+            { CharacterStates.Jump, new CharacterJumpState(_context, this) },
+            { CharacterStates.DoubleJump, new CharacterDoubleJumpState(_context, this) },
+            { CharacterStates.WallCling, new CharacterWallClingState(_context, this) },
+            { CharacterStates.WallJump, new CharacterWallJumpState(_context, this) }
         };
     }
     
@@ -53,12 +58,25 @@ public class CharacterStateFactory{
     public CharacterBaseState Jump(){
         return _states[CharacterStates.Jump];
     }
+    
+    public CharacterBaseState DoubleJump(){
+        return _states[CharacterStates.DoubleJump];
+    }
+    
+    public CharacterBaseState WallJump(){
+        return _states[CharacterStates.WallJump];
+    }
+    
     public CharacterBaseState Run(){
         return _states[CharacterStates.Run];
     }
 
     public CharacterBaseState Fall(){
         return _states[CharacterStates.Fall];
+    }
+    
+    public CharacterBaseState WallCling(){
+        return _states[CharacterStates.WallCling];
     }
 
     

@@ -1,10 +1,12 @@
-﻿using Godot;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using Godot;
 
 public abstract class CharacterBaseState{
     #region MEMBERS
 
     private CharacterStateMachine _context;
-    private CharacterStateFactory _factory;
+    private CharacterStateManager _manager;
     private CharacterBaseState _currentSubState;
     private CharacterBaseState _currentSuperState;
     private bool _isRootState = false;
@@ -17,7 +19,7 @@ public abstract class CharacterBaseState{
     #region PROPERTIES
 
     protected CharacterStateMachine Context => _context;
-    protected CharacterStateFactory Factory => _factory;
+    protected CharacterStateManager Manager => _manager;
     protected CharacterBaseState CurrentSubState => _currentSubState;
     protected CharacterBaseState CurrentSuperState => _currentSuperState;
 
@@ -53,16 +55,17 @@ public abstract class CharacterBaseState{
     /// Default constructor
     /// </summary>
     /// <param name="currentContext">Reference to the current context</param>
-    /// <param name="characterStateFactory">Reference to the current state factory</param>
-    public CharacterBaseState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory){
+    /// <param name="characterStateManager">Reference to the current state factory</param>
+    public CharacterBaseState(CharacterStateMachine currentContext, CharacterStateManager characterStateManager){
         _context = currentContext;
-        _factory = characterStateFactory;
+        _manager = characterStateManager;
     }
 
     /// <summary>
     /// Update all current root and sub states
     /// </summary>
     public void UpdateStates(){
+        Velocity = Context.Velocity;
         CalculateVelocity();
         UpdateState();
         _currentSubState?.UpdateStates();
@@ -72,6 +75,10 @@ public abstract class CharacterBaseState{
     /// Exit all states and substates
     /// </summary>
     protected void ExitStates(){
+        //Invoke callbacks for this state and all substates
+        Context.onStateExit?.Invoke(_currentSubState);
+        Context.onStateExit?.Invoke(this);
+        //Exit this state and all sub states
         _currentSubState?.ExitStates();
         ExitState();
     }
@@ -81,19 +88,21 @@ public abstract class CharacterBaseState{
     /// </summary>
     /// <param name="newState"></param>
     protected void SwitchState(CharacterBaseState newState){
-        //Exit current state and substates
+        //Exit current state and sub states
         ExitStates();
+        //Enter new state
+        newState.EnterState();
+        //Invoke callback to notify other scripts of the state change
+        Context.onStateEnter?.Invoke(newState);
         //Switch context state to the new state only if the new state is a root state
-        if (newState._isRootState){
-            //First, reset the root state for a fresh start
-            newState.Reset();
+        if (_isRootState && newState._isRootState){
+            //First, reset the this state for a fresh start next time
+            Reset();
             _context.CurrentState = newState;
         }
         else{
             _currentSuperState?.SetSubState(newState);
         }
-        //Enter new state
-        newState.EnterState();
     }
 
     /// <summary>
@@ -108,10 +117,11 @@ public abstract class CharacterBaseState{
     /// Set the current sub state if different than the current sub state
     /// </summary>
     /// <param name="newSubState">New sub state to check and switch if different</param>
-    protected void SetSubState(CharacterBaseState newSubState){
+    public void SetSubState(CharacterBaseState newSubState){
         if (_currentSubState == newSubState) return;
         _currentSubState?.ExitStates();
         _currentSubState = newSubState;
+        Context.onStateEnter?.Invoke(newSubState);
         newSubState.EnterState();
         newSubState.SetSuperState(this);
     }
@@ -120,15 +130,16 @@ public abstract class CharacterBaseState{
     /// Calculate velocity to be applied to the character
     /// </summary>
     private void CalculateVelocity(){
+        velocity = Context.Velocity;
         CalculateVelocityX(ref velocity);
         CalculateVelocityY(ref velocity, Context.Delta);
-        SetVelocity(velocity);
+        Context.Velocity = velocity;
     }
     
     /// <summary>
     /// Calculate vertical velocity to apply to the character
     /// Base state applies no vertical velocity
-    /// This method exists to be overridden by sub states
+    /// This method exists to be overridden by concrete states
     /// </summary>
     /// <param name="vel"></param>
     /// <param name="delta"></param>
@@ -138,24 +149,11 @@ public abstract class CharacterBaseState{
     
     /// <summary>
     /// Calculate horizontal velocity to apply to the character
-    /// Base state will apply walk or run velocity depending on input
+    /// Base state will apply no horizontal velocity
+    /// This method exists to be overridden by concrete states
     /// </summary>
     protected virtual void CalculateVelocityX(ref Vector2 vel){
-        //Calculate target velocity
-        float targetVelocity = Context.IsRunPressed
-            ? Context.MoveInput.X * Context.moveSpeed * Context.runSpeedMultiplier
-            : Context.MoveInput.X * Context.moveSpeed;
 
-        if (Context.MoveInput.X != 0){
-            vel.X = Mathf.MoveToward(
-                vel.X,
-                targetVelocity,
-                Context.MoveInput.X == Mathf.Sign(vel.X) ? Context.acceleration : Context.deceleration
-            );
-        }
-        else{
-            vel.X = Mathf.MoveToward(Context.Velocity.X, 0, Context.deceleration);
-        }
     }
 
     /// <summary>
@@ -163,16 +161,22 @@ public abstract class CharacterBaseState{
     /// </summary>
     /// <param name="vel"></param>
     protected void SetVelocity(Vector2 vel){
-        if (_isRootState){
-            Context.Velocity = vel;
-        }
-        else{
-            _currentSuperState.velocity = vel;
-        }
+        Context.Velocity = vel;
+    }
+
+    protected void AddImpulse(Vector2 vel){
+        Context.Velocity += vel;
+    }
+
+    protected void CancelVelocity(bool cancelX = false){
+        Vector2 newVelocity = Vector2.Zero;
+        if (!cancelX) newVelocity.X = Context.Velocity.X;
+        SetVelocity(newVelocity);
     }
 
     protected virtual void Reset(){
-        _currentSubState = null;
+        //Clear states
         _currentSuperState = null;
+        _currentSubState = null;
     }
 }

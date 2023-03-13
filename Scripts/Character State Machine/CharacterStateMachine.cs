@@ -18,7 +18,6 @@ public partial class CharacterStateMachine : CharacterBody2D{
         CalculateGravity();
         CalculateJumpVelocity();
         CalculateDashForce();
-        AssignCollisionCallbacks();
     }
 
     /// <summary>
@@ -40,7 +39,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
         _delta = delta;
         GatherInput();
         InterpolatePlayerPosition();
-        DelayedActions.IncrementActions(delta);
+        UpdateJumpTime(delta);
         UpdateStates();
     }
 
@@ -51,7 +50,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
     #region MEMBERS
 
     private CharacterBaseState _currentState;
-    private CharacterStateFactory _states;
+    private CharacterStateManager _states;
 
     #endregion
 
@@ -64,13 +63,25 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     #endregion
 
+    #region EVENTS
+
+    public delegate void OnStateEnter(CharacterBaseState state);
+
+    public OnStateEnter onStateEnter;
+
+    public delegate void OnStateExit(CharacterBaseState state);
+
+    public OnStateExit onStateExit;
+
+    #endregion
+
     private void UpdateStates(){
         _currentState.UpdateStates();
     }
 
     private void InitializeStates(){
-        _states = new CharacterStateFactory(this);
-        _currentState = _states.Grounded();
+        _states = new CharacterStateManager(this);
+        _currentState = _states.Airborne();
         _currentState.EnterState();
     }
 
@@ -89,7 +100,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
     private void InterpolatePlayerPosition(){
         _sprite.TopLevel = true;
         _sprite.GlobalPosition =
-            _sprite.GlobalPosition.Slerp(_lastPhysicsPosition, (float)Engine.GetPhysicsInterpolationFraction());
+            _sprite.GlobalPosition.Slerp(GlobalPosition, (float)Engine.GetPhysicsInterpolationFraction());
     }
 
     /// <summary>
@@ -117,6 +128,11 @@ public partial class CharacterStateMachine : CharacterBody2D{
     public bool IsRunPressed => _isRunPressed;
     public Vector2 MoveInput => _moveInput;
 
+    public bool DidJump{
+        get => _didJump;
+        set => _didJump = value;
+    }
+
     #endregion
 
 
@@ -125,10 +141,16 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// </summary>
     private void GatherInput(){
         _moveInput = Input.GetVector("Left", "Right", "Up", "Down");
+        _moveInput = _moveInput.GetRaw();
         _directionX = Input.GetAxis("Left", "Right");
         _isRunPressed = Input.IsActionPressed("Run");
         if (Input.IsActionJustPressed("Jump") && _currentJumps < maxJumps){
             _didJump = true;
+        }
+
+        if (Input.IsActionJustReleased("Jump")){
+            _didJump = false;
+            _isJumping = false;
         }
 
         if (_moveInput.LengthSquared() != 0){
@@ -197,19 +219,6 @@ public partial class CharacterStateMachine : CharacterBody2D{
         _wasOnCeiling = OnCeiling;
     }
 
-    /// <summary>
-    /// Assign callback methods that depend on collision state
-    /// </summary>
-    private void AssignCollisionCallbacks(){
-        onGroundEnter += ResetDive;
-        onGroundEnter += ResetJump;
-        onGroundEnter += ResetWallCling;
-        onWallExit += ResetWallCling;
-        onWallEnter += WallCling;
-        onWallEnter += ResetDive;
-        onWallEnter += ResetJump;
-    }
-
     #endregion
 
     #region BASIC MOVEMENT
@@ -246,53 +255,6 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     #endregion
 
-    #region METHODS
-
-    /// <summary>
-    /// Calculate directional velocity, then apply to the character
-    /// </summary>
-    /// <param name="delta"></param>
-    private void CalculateVelocity(double delta){
-        _currentVelocity = Velocity;
-        CalculateVelocityX(ref _currentVelocity);
-        CalculateVelocityY(ref _currentVelocity, delta);
-        CalculateAbilityVelocity(ref _currentVelocity, delta);
-        Velocity = _currentVelocity;
-    }
-
-
-    /// <summary>
-    /// Calculate the X velocity to apply to the character
-    /// </summary>
-    /// <param name="vel"></param>
-    public void CalculateVelocityX(ref Vector2 vel){
-        //Calculate target velocity
-        float targetVelocity = _isRunPressed ? _moveInput.X * moveSpeed * runSpeedMultiplier : _moveInput.X * moveSpeed;
-        if (!_isDashing){
-            if (_moveInput.X != 0){
-                vel.X = Mathf.MoveToward(
-                    vel.X,
-                    targetVelocity,
-                    _moveInput.X == Mathf.Sign(vel.X) ? acceleration : deceleration
-                );
-            }
-            else{
-                vel.X = Mathf.MoveToward(Velocity.X, 0, deceleration);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Calculate the Y velocity to apply the the character
-    /// </summary>
-    /// <param name="delta"></param>
-    /// <param name="vel"></param>
-    public void CalculateVelocityY(ref Vector2 vel, double delta){
-        ApplyGravity(delta, ref vel);
-    }
-
-    #endregion
-
     #endregion
 
     #region GRAVITY
@@ -306,22 +268,6 @@ public partial class CharacterStateMachine : CharacterBody2D{
     /// </summary>
     private void CalculateGravity(){
         _gravity = 2 * jumpHeight / Mathf.Pow(timeToJumpApex, 2);
-    }
-
-    /// <summary>
-    /// Apply gravity to the character
-    /// </summary>
-    /// <param name="delta"></param>
-    /// <param name="vel"></param>
-    private void ApplyGravity(double delta, ref Vector2 vel){
-        //Apply gravity only if not grounded and not dashing
-        if (Grounded || _isDashing) return;
-        //Smooth gravity using Verlet integration for improved accuracy
-        float previousVelocityY = vel.Y;
-        vel.Y += vel.Y >= 0 ? _gravity * fallSpeedMultiplier * (float)delta : _gravity * (float)delta;
-        float appliedVelocityY = (vel.Y + previousVelocityY) * 0.5f;
-        //Clamp applied velocity to max fall speed
-        vel.Y = Mathf.Clamp(appliedVelocityY, -maxFallSpeed, maxFallSpeed);
     }
 
     #endregion
@@ -352,8 +298,8 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
         //Wall Cling
         if (_isWallClinging){
-            wallClingTimer += delta;
-            if (wallClingTimer <= wallClingTime){
+            _wallClingTimer += delta;
+            if (_wallClingTimer <= wallClingTime){
                 //Slow Character fall
                 vel.Y *= wallClingGravityModifier;
                 //Force character against wall
@@ -372,13 +318,40 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     #region JUMP
 
-    //Jumping
+    #region MEMBERS
+
     [Export] public float jumpHeight = 32;
     [Export] public float timeToJumpApex = 0.25f;
     [Export] public float fallSpeedMultiplier = 2f;
     [Export] public uint maxJumps = 2;
     private float _jumpVelocity;
     private uint _currentJumps;
+    private bool _isJumping;
+    private double _jumpTimer;
+
+    #endregion
+
+    #region PROPERTIES
+
+    public double JumpTimer{
+        get => _jumpTimer;
+        set => _jumpTimer = value;
+    }
+
+
+    public float JumpVelocity => _jumpVelocity;
+
+    public uint CurrentJumps{
+        get => _currentJumps;
+        set => _currentJumps = value;
+    }
+
+    public bool IsJumping{
+        get => _isJumping;
+        set => _isJumping = value;
+    }
+
+    #endregion
 
     /// <summary>
     /// Apply a jump force to the character
@@ -388,6 +361,15 @@ public partial class CharacterStateMachine : CharacterBody2D{
         vel.Y = _jumpVelocity;
         _currentJumps++;
         _didJump = false;
+    }
+
+    private void UpdateJumpTime(double delta){
+        if (_jumpTimer > 0){
+            _jumpTimer -= delta;
+        }
+        else{
+            _isJumping = false;
+        }
     }
 
     /// <summary>
@@ -410,7 +392,8 @@ public partial class CharacterStateMachine : CharacterBody2D{
 
     [Export] public float wallClingTime = .5f;
     [Export] public float wallClingGravityModifier = .2f;
-    private double wallClingTimer;
+    public bool canWallCling = true;
+    private double _wallClingTimer;
     private bool _isWallClinging;
     private Vector2 _wallNormal;
 
@@ -428,7 +411,7 @@ public partial class CharacterStateMachine : CharacterBody2D{
         if (!_isWallClinging) return;
         _isWallClinging = false;
         _wallNormal = Vector2.Zero;
-        wallClingTimer = 0;
+        _wallClingTimer = 0;
     }
 
     #endregion

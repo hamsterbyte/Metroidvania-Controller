@@ -13,8 +13,6 @@ pivot_offset = Vector2(1, 1)
 [node name="Viewport" type="SubViewport" parent="Viewport Container"]
 disable_3d = true
 handle_input_locally = false
-snap_2d_transforms_to_pixel = true
-snap_2d_vertices_to_pixel = true
 canvas_item_default_texture_filter = 0
 size = Vector2i(642, 362)
 size_2d_override_stretch = true

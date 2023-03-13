@@ -1,12 +1,13 @@
 ﻿using Godot;
 
 public class CharacterFallState : CharacterBaseState{
-    public CharacterFallState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
-        base(currentContext, characterStateFactory){
+    public CharacterFallState(CharacterStateMachine currentContext, CharacterStateManager characterStateManager) :
+        base(currentContext, characterStateManager){
+        IsAirborneSubState = true;
     }
 
     public override void EnterState(){
-        GD.Print("Enter Fall");
+        
     }
 
     public override void UpdateState(){
@@ -14,10 +15,11 @@ public class CharacterFallState : CharacterBaseState{
     }
 
     public override void ExitState(){
-        GD.Print("Exit Fall");
+        
     }
 
     public override void CheckSwitchStates(){
+
     }
 
     public override void InitializeSubState(){
@@ -29,7 +31,6 @@ public class CharacterFallState : CharacterBaseState{
     /// </summary>
     protected override void CalculateVelocityY(ref Vector2 vel, double delta){
         ApplyGravity(delta, ref vel);
-        SetVelocity(vel);
     }
 
     /// <summary>

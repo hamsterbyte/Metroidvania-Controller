@@ -1,20 +1,20 @@
 ﻿using Godot;
 
 public class CharacterRunState : CharacterBaseState{
-    public CharacterRunState(CharacterStateMachine currentContext, CharacterStateFactory characterStateFactory) :
-        base(currentContext, characterStateFactory){
+    public CharacterRunState(CharacterStateMachine currentContext, CharacterStateManager characterStateManager) :
+        base(currentContext, characterStateManager){
         IsGroundedSubState = true;
     }
     public override void EnterState(){
-        GD.Print("Entered Run");
-    }
-
-    public override void UpdateState(){
         
     }
 
+    public override void UpdateState(){
+        CheckSwitchStates();
+    }
+
     public override void ExitState(){
-        GD.Print("Exit Run");
+        
     }
 
     public override void CheckSwitchStates(){
