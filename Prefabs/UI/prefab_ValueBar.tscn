@@ -1,0 +1,76 @@
+[gd_scene load_steps=5 format=3 uid="uid://37mo00g3ykun"]
+
+[ext_resource type="Texture2D" uid="uid://8por2fgkpm0j" path="res://Assets/UI/ui_BarBackground.png" id="1_tgu0r"]
+[ext_resource type="Script" path="res://Scripts/UI/ValueBar.cs" id="2_2vx7t"]
+[ext_resource type="Texture2D" uid="uid://dogugclvpmfr4" path="res://Assets/UI/ui_BarFrame.png" id="3_gmxhf"]
+[ext_resource type="Texture2D" uid="uid://dv5hofixyvg44" path="res://Assets/UI/ui_BarGlass.png" id="3_pbjl3"]
+
+[node name="Value Bar" type="NinePatchRect"]
+self_modulate = Color(0.139503, 0.0840529, 0.157492, 1)
+clip_children = 2
+texture_filter = 1
+custom_minimum_size = Vector2(128, 16)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -8.0
+offset_right = 64.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_tgu0r")
+patch_margin_left = 8
+patch_margin_right = 8
+script = ExtResource("2_2vx7t")
+_animationSpeed = 1.0
+
+[node name="Current Value" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Modified Value" type="ColorRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.952941, 0.658824, 0.2, 1)
+
+[node name="Glass" type="NinePatchRect" parent="."]
+texture_filter = 1
+custom_minimum_size = Vector2(128, 16)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_pbjl3")
+region_rect = Rect2(0, 0, 172, 16)
+patch_margin_left = 8
+patch_margin_right = 8
+
+[node name="Frame" type="NinePatchRect" parent="."]
+texture_filter = 1
+custom_minimum_size = Vector2(128, 16)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_gmxhf")
+region_rect = Rect2(0, 0, 172, 16)
+patch_margin_left = 8
+patch_margin_right = 8

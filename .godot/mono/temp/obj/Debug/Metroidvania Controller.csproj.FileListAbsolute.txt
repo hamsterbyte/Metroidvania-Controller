@@ -1,0 +1,17 @@
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\bin\Debug\Metroidvania Controller.deps.json
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\bin\Debug\Metroidvania Controller.runtimeconfig.json
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\bin\Debug\Metroidvania Controller.dll
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\bin\Debug\Metroidvania Controller.pdb
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\bin\Debug\GodotSharp.dll
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\bin\Debug\GodotSharpEditor.dll
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\Metroidvania Controller.csproj.AssemblyReference.cache
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\Metroidvania Controller.GeneratedMSBuildEditorConfig.editorconfig
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\Metroidvania Controller.AssemblyInfoInputs.cache
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\Metroidvania Controller.AssemblyInfo.cs
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\Metroidvania Controller.csproj.CoreCompileInputs.cache
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\Metroidvania Controller.csproj.CopyComplete
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\Metroidvania Controller.dll
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\refint\Metroidvania Controller.dll
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\Metroidvania Controller.pdb
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\Metroidvania Controller.genruntimeconfig.cache
+D:\Godot Projects\Metroidvania Controller\.godot\mono\temp\obj\Debug\ref\Metroidvania Controller.dll

@@ -1,0 +1,33 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://chjp833bo1xir"
+path="res://.godot/imported/Super Mario World Text Box.ttf-074ef2ab27f5fdb0fcaf8f88aa92a155.fontdata"
+
+[deps]
+
+source_file="res://Assets/Font/Super Mario World Text Box.ttf"
+dest_files=["res://.godot/imported/Super Mario World Text Box.ttf-074ef2ab27f5fdb0fcaf8f88aa92a155.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=1
+generate_mipmaps=false
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=true
+force_autohinter=false
+hinting=1
+subpixel_positioning=1
+oversampling=0.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[]
+language_support={}
+script_support={}
+opentype_features={}

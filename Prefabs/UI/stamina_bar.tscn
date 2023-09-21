@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3 uid="uid://bpowjsqu561ue"]
+
+[ext_resource type="Texture2D" uid="uid://8por2fgkpm0j" path="res://Assets/UI/ui_BarBackground.png" id="1_xfl78"]
+[ext_resource type="Script" path="res://Scripts/UI/ValueBar.cs" id="2_ch5bm"]
+[ext_resource type="Texture2D" uid="uid://dogugclvpmfr4" path="res://Assets/UI/ui_BarFrame.png" id="2_rbbks"]
+
+[node name="Stamina Bar" type="NinePatchRect"]
+clip_children = 2
+offset_right = 256.0
+offset_bottom = 24.0
+texture = ExtResource("1_xfl78")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+script = ExtResource("2_ch5bm")
+_increasingColor = Color(0.615686, 0.901961, 0.305882, 1)
+_decreasingColor = Color(0.92549, 0.152941, 0.247059, 1)
+
+[node name="Current Value" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Modified Value" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.211765, 0.772549, 0.956863, 1)
+
+[node name="Frame" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_rbbks")
+region_rect = Rect2(0, 0, 512, 64)
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10

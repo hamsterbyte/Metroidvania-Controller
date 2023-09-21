@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://dwshwn2y0mgdv"]
+
+[ext_resource type="PackedScene" uid="uid://baiwuaqis6jj1" path="res://Scenes/level.tscn" id="1_j3djy"]
+[ext_resource type="PackedScene" uid="uid://bi2ijwpro4fgy" path="res://Scenes/UI.tscn" id="2_x4sjr"]
+
+[node name="Base Game" type="Node2D"]
+
+[node name="Viewport Container" type="SubViewportContainer" parent="."]
+offset_right = 642.0
+offset_bottom = 362.0
+scale = Vector2(3, 3)
+
+[node name="Viewport" type="SubViewport" parent="Viewport Container"]
+disable_3d = true
+handle_input_locally = false
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(642, 362)
+render_target_update_mode = 4
+
+[node name="Level" parent="Viewport Container/Viewport" instance=ExtResource("1_j3djy")]
+
+[node name="UI Canvas" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="UI" parent="UI Canvas" instance=ExtResource("2_x4sjr")]

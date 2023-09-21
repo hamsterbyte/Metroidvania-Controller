@@ -1,0 +1,6 @@
+res://Scenes/MainScene.tscn
+res://Scenes/level.tres
+res://Scenes/UI.tscn
+res://Scenes/level.tscn
+res://Scenes/player.tscn
+res://Prefabs/UI/prefab_ValueBar.tscn

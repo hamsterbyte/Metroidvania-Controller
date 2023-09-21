@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=3 uid="uid://bi2ijwpro4fgy"]
+
+[ext_resource type="PackedScene" uid="uid://37mo00g3ykun" path="res://Prefabs/UI/prefab_ValueBar.tscn" id="2_37f8m"]
+
+[node name="UI" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 54.0
+grow_horizontal = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Health" type="HBoxContainer" parent="Background"]
+layout_mode = 2
+offset_left = 23.0
+offset_top = 16.0
+offset_right = 177.0
+offset_bottom = 32.0
+
+[node name="Space" type="Control" parent="Background/Health"]
+layout_mode = 2
+
+[node name="Value Bar" parent="Background/Health" instance=ExtResource("2_37f8m")]
+layout_mode = 2
+_overlayColor = Color(0.847059, 0.219608, 0.262745, 1)
+_increasingColor = Color(0.133333, 0.537255, 0.431373, 1)
+_decreasingColor = Color(0.529412, 0.164706, 0.219608, 1)
+
+[node name="Stamina" type="HBoxContainer" parent="Background"]
+layout_direction = 1
+layout_mode = 2
+offset_left = 19.0
+offset_top = 32.0
+offset_right = 147.0
+offset_bottom = 48.0
+size_flags_horizontal = 0
+
+[node name="Value Bar" parent="Background/Stamina" instance=ExtResource("2_37f8m")]
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+_overlayColor = Color(0.392157, 0.203922, 0.6, 1)
+_increasingColor = Color(0.54902, 0.317647, 0.8, 1)
+_decreasingColor = Color(0.254902, 0.156863, 0.4, 1)
